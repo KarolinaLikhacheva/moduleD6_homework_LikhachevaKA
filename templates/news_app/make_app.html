@@ -1,0 +1,29 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка задач</title>
+</head>
+
+<body>
+    <h1>Проверка задач</h1>
+    <form action="{% url 'news:make_app' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="client_name">Имя</label>
+        <input type="text" name="client_name"><br>
+        <label for="message">Описание</label>
+        <input type="text" name="message"><br>
+        <label for="date">Время</label>
+        <input type="date" name="date">.<br>
+        <input type="submit">
+    </form>
+
+    <br>
+    <a href="/news/"> <--Вернуться к новостям </a>
+</body>
+
+</html>
