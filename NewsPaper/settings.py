@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-!^+x(02s$!ef3yf)ot^swb!=3i7h=s4sea=vwgv4@(tjr1*29h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -131,28 +131,28 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory' #был None 
 ACCOUNT_FORMS = {'signup': 'sign.models.CommonSignupForm'}
 
 # [-- Модуль D6.2. Отправляем письма через Django
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.ru' # адрес сервера Яндекс-почты для всех один и тот же
+EMAIL_HOST = 'smtp.mail.ru' # адрес сервера Яндекс-почты для всех один и тот же
 EMAIL_PORT = 465 # порт smtp сервера тоже одинаковый
-EMAIL_HOST_USER = 'l-karolina-a@mail.ru' # ваше имя пользователя,
+EMAIL_HOST_USER = 'l-karolina-a.mail.ru' # ваше имя пользователя,
 # например если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
-EMAIL_HOST_PASSWORD = 'skillfactory@2023' # пароль от почты
+EMAIL_HOST_PASSWORD = 'TGxsSwxBKP5fbT4vcmtS' # пароль от почты
 EMAIL_USE_SSL = True # Яндекс использует ssl, подробнее о том, что это, почитайте на Википедии, но включать его здесь обязательно
 # --]
 
 # [-- Модуль D6.2. Отправляем письма через Django
 # Есть варианты отправлять информацию по почте, например, какой-то определённой группе пользователей — админам.
 # ADMINS = [(manager.split('|')[0], manager.split('|')[1]) for manager in os.getenv("ADMINS").split(',')]
-SERVER_EMAIL = 'l-karolina-a@mail.ru' # это будет у нас вместо аргумента FROM в массовой рассылке
+SERVER_EMAIL = 'l-karolina-a.mail.ru' # это будет у нас вместо аргумента FROM в массовой рассылке
 # --]
 
 # [--D6.3. Django-allauth и email. Регистрация пользователя с подтверждением по электронной почте
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER # если вы используете Яндекс, то не забудьте добавить + ‘@yandex.ru’
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER # здесь указываем уже свою ПОЛНУЮ почту с которой будут отправляться письма
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER + '@mail.ru'# здесь указываем уже свою ПОЛНУЮ почту с которой будут отправляться письма
 # если вы используете Яндекс, то не забудьте добавить + ‘@yandex.ru’
 
 # Internationalization
@@ -188,3 +188,4 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 # если задача не выполняется за 25 секунд, то она автоматически снимается,
 # можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+
