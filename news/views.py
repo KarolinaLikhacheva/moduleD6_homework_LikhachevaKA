@@ -112,10 +112,9 @@ class PostCategoryView(ListView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         category = Category.objects.get(id=self.id)
-        subscribed = category.subscribers.filter(email=user.email)
-        if not subscribed:
+        subscribed = category.subscribers.filter(email=user.email) # получаем всех подписчиков и отфильтровываем
+        if not subscribed:              # если наш подписчик не отфильтровывается, то передаем
             context['category'] = category
-
 
         return context
 
@@ -133,10 +132,10 @@ class AllCategoriesView(ListView):
 @login_required
 def subscribe_to_category(request, pk):  # подписка на категорию
     user = request.user
-    category = Category.objects.get(id=pk)
+    category = Category.objects.get(id=pk) # получаем категорию из таблицы через метод get
 
 
-    if not category.subscribers.filter(id=user.id).exists():
+    if not category.subscribers.filter(id=user.id).exists(): # если пользователь не существует среди подписчиков
         category.subscribers.add(user)
         email = user.email
         html = render_to_string(
@@ -158,7 +157,7 @@ def subscribe_to_category(request, pk):  # подписка на категор�
             msg.send()
         except Exception as e:
             print(e)
-        return redirect(request.META.get('HTTP_REFERER'))
+        return redirect(request.META.get('HTTP_REFERER')) # если что-то пшло не так - возвращяем на туже страницу
         # return redirect('news_list')
     return redirect(request.META.get('HTTP_REFERER'))  # возвращает на страницу, с кот-й поступил запрос
 
