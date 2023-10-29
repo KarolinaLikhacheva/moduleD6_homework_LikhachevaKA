@@ -25,7 +25,7 @@ def new_post_subscription(instance):  # вызывается в signals.py
             },
         )
         msg = EmailMultiAlternatives(
-            body='Ткс письма',
+            body=' ',
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[user_emails, ]
         )

@@ -1,21 +1,59 @@
+import datetime
 import logging
 
 from django.conf import settings
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
+from django.core.mail import EmailMultiAlternatives
 from django.core.management.base import BaseCommand
+from django.template.loader import render_to_string
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
+from datetime import timedelta
+
+from .models import Post, Category
 
 logger = logging.getLogger(__name__)
 
 
-# наша задача по выводу текста на экран
-# python manage.py runapscheduler
-def my_job():
-    #  Your job processing logic here...
-    print('hello from job')
+def sending_weekly_news():
+    categories = Category.objects.all()
+    posts = Post.objects.all()
+    start_date = datetime.date.today() - timedelta(days=6)
+    subs_news_result_list = {}
+
+    for cat in categories:
+        subscribers = cat.subscribers.all()
+        if len(subscribers) > 0:
+            weekly_news = posts.filter(
+                category__name=cat,
+                timePost__gte=start_date,
+            )
+
+            for sub in subscribers:
+                if sub not in subs_news_result_list:
+                    subs_news_result_list[sub] = []
+                subs_news_result_list[sub].extend(weekly_news)
+
+    subs_news_result_list[sub] = set(subs_news_result_list[sub])
+
+    for sub, posts in subs_news_result_list.items():
+        html_content = render_to_string(
+            template_name='mail/weekly_posts.html',
+            context={
+                'user': sub,
+                'posts': posts,
+            },
+        )
+        msg = EmailMultiAlternatives(
+            subject=f'Еженедельные новости',
+            body='',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[sub.email],
+        )
+        msg.attach_alternative(html_content, 'text/html')
+        msg.send()
 
 
 # функция которая будет удалять неактуальные задачи
@@ -33,10 +71,9 @@ class Command(BaseCommand):
 
         # добавляем работу нашему задачнику
         scheduler.add_job(
-            my_job,
-            trigger=CronTrigger(second="*/10"),
-            # Тоже самое что и интервал, но задача триггера таким образом более понятна django
-            id="my_job",  # уникальный айди
+            sending_weekly_news,
+            trigger=CronTrigger(second="*/10"), # Тоже самое что и интервал, но задача тригера таким образом более понятна django
+            id="my_job",  
             max_instances=1,
             replace_existing=True,
         )
@@ -57,9 +94,9 @@ class Command(BaseCommand):
         )
 
         try:
-            logger.info("Успешно запущен...")
+            logger.info("Starting scheduler...")
             scheduler.start()
         except KeyboardInterrupt:
-            logger.info("Остановка...")
+            logger.info("Stopping scheduler...")
             scheduler.shutdown()
-            logger.info("Успешно выключен!")
+            logger.info("Scheduler shut down successfully!")
