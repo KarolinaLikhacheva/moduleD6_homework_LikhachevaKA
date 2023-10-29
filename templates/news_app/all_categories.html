@@ -3,10 +3,23 @@
 {% block title %} All Categories {% endblock title %}
 
 {% block content %}
-    <h3>All Categories</h3>
+    <h3>Все категории</h3>
     <ul>
         {% for category in categories %}
-            <li><a href="{% url 'news:category' category.id %}">{{ category.name }}</a></li>
+            <li><a href="{% url 'news:category' category.id %}">{{ category.name }}</a> 
+                <div>
+                {% if category.id %}
+                    <p>Подписаться на категорию {{ category.name }}? <button> <a href="{% url 'news:subscribe' category.id %}"> Подписаться </a></button></p>
+                {% endif %}
+                </div>
+            </li>
+            
         {% endfor %}
+        {% include 'news_app/inc/posts.html' %}
     </ul>
+
+    <hr>
+    <br>
+    <h5><a href="/news/"> <--Вернуться к новостям </a></h5>
+    <br>
 {% endblock content %}
