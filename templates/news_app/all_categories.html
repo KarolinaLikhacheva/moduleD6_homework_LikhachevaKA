@@ -9,7 +9,17 @@
             <li><a href="{% url 'news:category' category.id %}">{{ category.name }}</a> 
                 <div>
                 {% if category.id %}
-                    <p>Подписаться на категорию {{ category.name }}? <button> <a href="{% url 'news:subscribe' category.id %}"> Подписаться </a></button></p>
+                    {% if user not in category.subscribers.all %}
+                    <form action="{% url 'news:subscribe' category.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" value="Подписаться {{category.id }}"/>
+                    </form>
+                    {% else %}
+                    <form action="{% url 'news:unsubscribe' category.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" value="Отписаться {{category.id }}"/>
+                    </form>
+                    {% endif %}
                 {% endif %}
                 </div>
             </li>
